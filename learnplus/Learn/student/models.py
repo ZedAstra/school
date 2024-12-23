@@ -36,4 +36,19 @@ class Student(models.Model):
             return True
         except:
             return False
+        
+class StudentReponse(models.Model):
+    student = models.ForeignKey(Student,on_delete=models.CASCADE,related_name='student_reponse_student')
+    question = models.ForeignKey(quiz_models.Question,on_delete=models.CASCADE,related_name='student_reponse_question')
+    reponse = models.TextField()
+    status = models.BooleanField(default=True)
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'StudentReponse'
+        verbose_name_plural = 'StudentReponses'
+
+    def __str__(self):
+        return self.student.user.username
 
