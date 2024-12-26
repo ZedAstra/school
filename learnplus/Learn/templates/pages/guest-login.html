@@ -30,7 +30,7 @@
                         <div class="page-separator__text">or</div>
                     </div>
                     
-                    <form action="http://learnplus-bootstrap.frontendmatter.com/student-dashboard.html" novalidate method="get"> 
+                    <form action="/" novalidate method="POST"> 
                         {% csrf_token %}
                         <div v-if="isSuccess" class="alert alert-success" role="alert">
                             ${ message }

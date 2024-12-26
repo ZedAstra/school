@@ -1,3 +1,4 @@
+from math import e
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login as login_request, logout
 from django.shortcuts import render , redirect 
@@ -28,25 +29,59 @@ def login(request):
         return render(request, 'pages/guest-login.html', datas)
 
 def signup(request):
-    if request.user.is_authenticated:
-        try:
+    if request.method == 'GET':
+        if request.user.is_authenticated:
             try:
-                print("1")
-                if request.user.student_user:
-                    return redirect('index_student')
+                try:
+                    print("1")
+                    if request.user.student_user:
+                        return redirect('index_student')
+                except:
+                    print("2")
+                    if request.user.instructor:
+                        return redirect('dashboard')
             except:
-                print("2")
-                if request.user.instructor:
-                    return redirect('dashboard')
-        except:
-            print("3")
-            return redirect("/admin/")
-    else:
+                print("3")
+                return redirect("/admin/")
+        else:
+            datas = {
 
-        datas = {
-
-        }
-        return render(request, 'pages/guest-signup.html', datas) 
+            }
+            return render(request, 'pages/guest-signup.html', datas)
+        
+    elif request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        if password != password2:
+            datas = {
+                'error': True,
+                'message': 'Les mots de passe ne correspondent pas',
+            }
+            return render(request, 'pages/guest-signup.html', datas)
+        elif request.POST.get('terms') is None: 
+            datas = {
+                'error': True,
+                'message': 'Vous devez accepter les conditions d\'utilisation',
+            }
+            return render(request, 'pages/guest-signup.html', datas)
+        else:
+            try:
+                
+                user = User.objects.create_user(username=name, email=email, password=password)
+                user.save()
+                datas = {
+                    'isSuccess': True,
+                    'message': 'Votre compte a été créé avec succès',
+                }
+                return render(request, 'pages/guest-login.html', datas)
+            except:
+                datas = {
+                    'error': True,
+                    'message': 'Une erreur s\'est produite',
+                }
+        return render(request, 'pages/guest-signup.html') 
 
 def forgot_password(request):
     if request.user.is_authenticated:
@@ -84,11 +119,10 @@ def islogin(request):
     try:
         
         if '@' in username:
-            user = authenticate(email=username, password=password)
             utilisateur = User.objects.get(email=username)
-            print(username)
+            user = authenticate(request, username=utilisateur.username, password=password)
         else:
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=username, password=password)
             utilisateur = User.objects.get(username=username)
             
         if user is not None and user.is_active:
@@ -112,7 +146,9 @@ def islogin(request):
                 'redirect' : u_type,
                 'success':True,
                 'message':'Vous êtes connectés!!!',
+                'next': '/'+u_type
             }
+            print(datas)
             return JsonResponse(datas,safe=False) # page si connect
                 
         else:

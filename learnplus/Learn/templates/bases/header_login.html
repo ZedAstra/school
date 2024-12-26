@@ -106,18 +106,18 @@
                                 var url = new URL(url_string);
                                 var next = url.searchParams.get("next");
                                 console.log(next);
-                                if (next != ""){
+                                if (next != null && next != "" ) {
                                     window.location.replace(this.base_url + next);
-                                }else{
-                                window.location.replace(this.base_url + "/" + response.data.redirect);
+                                } else {
+                                    console.log("redirecting to " + this.base_url + "/" + response.data.redirect)
+                                    window.location.replace(this.base_url + "/" + response.data.redirect);
                                 }
                             } else {
                                 this.error = true
                                 this.message = response.data.message
                                 this.success = response.data.success
-                                this.isSuccess = false
                             }
-                            console.log("success variable" + this.isSuccess)
+                            console.log("success variable" + this.success)
                             // console.log("success variable"+this.error)
                         })
                             .catch((err) => {
