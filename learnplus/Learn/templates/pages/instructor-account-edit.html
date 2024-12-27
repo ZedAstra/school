@@ -36,7 +36,7 @@
                                                 <div class="media align-items-center">
                                                     <div class="media-left">
                                                         <div class="icon-block rounded">
-                                                            <img src="{{user.instructor.photo.url}}" alt="Avatar" width="80">
+                                                            <img class="avatar" src="{{user.instructor.photo.url}}" alt="Avatar" width="80">
                                                         </div>
                                                     </div>
                                                     <div class="media-body">
@@ -162,6 +162,11 @@
 <!-- vue -->
 <script src="/static/assets/js/vue.js"></script> 
 <script>
+    const scratchDiv = document.createElement('div');
+    function toPlainText(html) {
+        scratchDiv.innerHTML = html;
+        return scratchDiv.textContent;
+    }
     // Block Vue JS  
     new Vue({
     el: '#instructor-profil',
@@ -181,7 +186,9 @@
        base_url: window.location.protocol + "//" + window.location.host + "/",
     },
     delimiters: ["${", "}"],
-    mounted() { },
+    mounted() {
+        this.bio = toPlainText(this.bio)
+    },
     methods: {
         instructor_profil: function () {
            if (!this.isregister) {
@@ -284,9 +291,13 @@
                }
            }
        },
-       handleImageUploaded() {
+        handleImageUploaded() {
             this.file = this.$refs.file.files[0];
-            console.log(this.file)
+            var imgs = document.getElementsByClassName('avatar');
+            const url = URL.createObjectURL(this.file);
+            for (var i = 0; i < imgs.length; i++) {
+                imgs[i].src = url;
+            }
         },
     }
     });

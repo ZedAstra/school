@@ -119,7 +119,7 @@ def edit(request):
                 if request.user.student_user:
                     datas = {
 
-                           }
+                    }
                 return render(request,'pages/fixed-student-account-edit.html',datas)
         except Exception as e:
             print(e)

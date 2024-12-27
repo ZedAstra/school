@@ -34,12 +34,12 @@
                                             <div class="media align-items-center">
                                                 <div class="media-left">
                                                     <div class="icon-block rounded">
-                                                        <img src="{{user.student_user.photo.url}}" alt="Avatar" width="80">
+                                                        <img class="avatar" src="{{user.student_user.photo.url}}" alt="Avatar" width="80">
                                                     </div>
                                                 </div>
                                                 <div class="media-body">
                                                     <div class="custom-file" style="width: auto;">
-                                                        <input  class="custom-file-input" ref="file" type="file" accept="image/*" v-on:change="handleImageUploaded">
+                                                        <input class="custom-file-input" ref="file" type="file" accept="image/*" v-on:change="handleImageUploaded">
                                                         <label for="avatar" class="custom-file-label">Choisissez votre photo</label>
                                                     </div>
                                                 </div>
@@ -162,6 +162,11 @@
     <!-- vue -->
     <script src="/static/assets/js/vue.js"></script> 
     <script>
+        const scratchDiv = document.createElement('div');
+        function toPlainText(html) {
+            scratchDiv.innerHTML = html;
+            return scratchDiv.textContent;
+        }
         // Block Vue JS  
         new Vue({
         el: '#profil',
@@ -181,55 +186,58 @@
            base_url: window.location.protocol + "//" + window.location.host + "/",
         },
         delimiters: ["${", "}"],
-        mounted() { },
+        mounted() { 
+            this.bio = toPlainText(this.bio)
+        },
         methods: {
             profil: function () {
-               if (!this.isregister) {
-                   this.error = false
-                   this.isSuccess = false
-                   this.isregister = true
-                   if (this.nom == "{{user.last_name}}" && this.prenom == "{{user.first_name}}" && this.email == "{{user.email}}" && this.bio == "{{ user.student_user.bio }}" && this.file == "{{user.student_user.photo.url}}" ) {
-                       this.message = "aucune modification";
-                       this.error = true
-                       this.isSuccess = false
-                       this.isregister = false;
-                   } else {
-                    //    permet d'imploder des fichiers
-                       let formData = new FormData();
-                       formData.append('nom', this.nom);
-                       formData.append('prenom', this.prenom);
-                       formData.append('file', this.file);
-                       formData.append('email', this.email);
-                       formData.append('bio', this.bio);
-                       axios.defaults.xsrfCookieName = 'csrftoken'
-                       axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-                       axios.post(this.base_url + 'student/update_profil',
-                           formData,
-                           {
-                               headers: {
-                                   'Content-Type': 'multipart/form-data',
-                               }
-                           }).then(response => {
-                           console.log(response)
-                           this.isregister = false;
-                           if (response.data.success) {
-                               this.isSuccess = true
-                               this.error = false
-                               this.message = response.data.message
-                               this.success = response.data.success
-                           } else {
-                               this.error = true
-                               this.message = response.data.message
-                               this.success = response.data.success
-                               this.isSuccess = false
-                           }
-                           console.log("success variable" + this.isSuccess)
-                           // console.log("success variable"+this.error)
-                       })
-                           .catch((err) => {
-                               this.isregister = false;
-                               console.log(err);
-                           })
+                console.log(this.bio == toPlainText(this.bio))
+                if (!this.isregister) {
+                    this.error = false
+                    this.isSuccess = false
+                    this.isregister = true
+                    if (this.nom == "{{user.last_name}}" && this.prenom == "{{user.first_name}}" && this.email == "{{user.email}}" && this.bio == "{{ user.student_user.bio }}" && this.file == "{{user.student_user.photo.url}}" ) {
+                        this.message = "aucune modification";
+                        this.error = true
+                        this.isSuccess = false
+                        this.isregister = false;
+                    } else {
+                        //    permet d'imploder des fichiers
+                        let formData = new FormData();
+                        formData.append('nom', this.nom);
+                        formData.append('prenom', this.prenom);
+                        formData.append('file', this.file);
+                        formData.append('email', this.email);
+                        formData.append('bio', this.bio);
+                        axios.defaults.xsrfCookieName = 'csrftoken'
+                        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+                        axios.post(this.base_url + 'student/update_profil',
+                            formData,
+                            {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data',
+                                }
+                            }).then(response => {
+                            console.log(response)
+                            this.isregister = false;
+                            if (response.data.success) {
+                                this.isSuccess = true
+                                this.error = false
+                                this.message = response.data.message
+                                this.success = response.data.success
+                            } else {
+                                this.error = true
+                                this.message = response.data.message
+                                this.success = response.data.success
+                                this.isSuccess = false
+                            }
+                            console.log("success variable" + this.isSuccess)
+                            // console.log("success variable"+this.error)
+                        })
+                            .catch((err) => {
+                                this.isregister = false;
+                                console.log(err);
+                            })
                    }
                }
            },
@@ -286,7 +294,11 @@
            },
            handleImageUploaded() {
                 this.file = this.$refs.file.files[0];
-                console.log(this.file)
+                var imgs = document.getElementsByClassName('avatar');
+                const url = URL.createObjectURL(this.file);
+                for (var i = 0; i < imgs.length; i++) {
+                    imgs[i].src = url;
+                }
             },
         }
         });
