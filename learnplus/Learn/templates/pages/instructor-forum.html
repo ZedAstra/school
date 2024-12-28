@@ -33,7 +33,7 @@
                                             <div class="media align-items-center">
                                                 <div class="media-left">
                                                     <div class="forum-icon-wrapper">
-                                                        <a href="{% url 'instructor-forum-thread' i.slug %}" class="forum-thread-icon">
+                                                        <a href="/forum/thread/{{i.id}}" class="forum-thread-icon">
                                                             <i class="material-icons">description</i>
                                                         </a>
                                                         <a href="{% url 'instructor-profile' %}" class="forum-thread-user">
@@ -50,7 +50,7 @@
                                                         <a href="#" class="text-body"><strong>{{ i.user.last_name }} {{ i.user.first_name }}</strong></a>
                                                         <small class="ml-auto text-muted">{{ i.date_add }}</small>
                                                     </div>
-                                                    <a class="text-black-70" href="{% url 'instructor-forum-thread' i.slug %}">{{ i.titre }}</a>
+                                                    <a class="text-black-70" href="/forum/thread/{{i.id}}">{{ i.titre }}</a>
                                                 </div>
                                             </div>
                                         </li>
@@ -264,7 +264,7 @@
                             formData.append('question', this.question);
                             axios.defaults.xsrfCookieName = 'csrftoken'
                             axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-                            axios.post(this.base_url + 'instructor/post_forum',
+                            axios.post(this.base_url + 'forum/create_thread/',
                                 formData,
                                 {
                                     headers: {
@@ -280,7 +280,7 @@
                                         this.success = response.data.success
                                         this.titre = ""
                                         this.question = ""
-                                        window.location.replace(this.base_url + 'instructor/forum_thread/' + response.data.forum);
+                                        window.location.replace(this.base_url + 'forum/thread/' + response.data.thread_id);
                                     } else {
                                         this.error = true
                                         this.message = response.data.message

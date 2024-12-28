@@ -66,7 +66,7 @@ class CoursAdmin(CustomAdmin):
     search_fields = ('chapitre',)
     ordering = ('chapitre',)
     fieldsets = [
-                 ("info cours",{"fields":["chapitre","titre", "image", "video", "pdf"]}),
+                 ("info cours",{"fields":["chapitre","titre", "instructeur", "image", "video", "pdf"]}),
                  ("standard",{"fields":["status"]})
     ]
 
