@@ -693,7 +693,7 @@ def take_course(request, slug):
         except Exception as e:
             print(e)
             print("3")
-            return redirect('my_courses')
+            return redirect('my-courses')
    
 
 @login_required(login_url = 'login')

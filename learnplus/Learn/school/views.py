@@ -132,11 +132,11 @@ def islogin(request):
             try:
                 try:
                     print("1")
-                    if utilisateur.student_user:
+                    if utilisateur.student_user: # type: ignore
                         u_type = "student"
                 except:
                     print("2")
-                    if utilisateur.instructor:
+                    if utilisateur.instructor: # type: ignore
                         u_type = "instructor"
             except:
                 print("3")
