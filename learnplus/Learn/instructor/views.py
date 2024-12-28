@@ -207,6 +207,7 @@ def matiere(request, slug):
                     datas = {
                             'Chapitre' : Chapitre ,
                            }
+                    print(len(Chapitre))
                     return render(request,'pages/instructor-cours-chap.html',datas)
         except Exception as e:
             print(e)
@@ -545,8 +546,10 @@ def profile(request):
                 print("2")
                 if request.user.instructor:
                     datas = {
-
-                           }
+                        "courses": school_models.Cours.objects.filter(instructeur=request.user.instructor),
+                        "nom": request.user.last_name + " " + request.user.first_name,
+                    }
+                    print(datas.get("courses"))
                     return render(request,'pages/instructor-profile.html',datas)
         except Exception as e:
             print(e)

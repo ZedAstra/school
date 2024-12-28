@@ -3,7 +3,6 @@ from django.utils.text import slugify
 from datetime import datetime
 
 
-
 # Create your models here.
 # class Filiere(models.Model):
 #     nom = models.CharField(max_length=255)
@@ -108,6 +107,7 @@ class Chapitre(models.Model):
 
 class Cours(models.Model):
     titre = models.CharField(max_length=255)
+    instructeur = models.ForeignKey("instructor.Instructor",on_delete=models.CASCADE,related_name='cours_instructeur')
     chapitre = models.ForeignKey(Chapitre,on_delete=models.CASCADE,related_name='cours_chapitre')
     image = models.ImageField(upload_to='images/cours' , null=True)
     video = models.FileField(upload_to="ressources/cours",null=True)

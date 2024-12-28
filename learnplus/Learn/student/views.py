@@ -684,16 +684,16 @@ def take_course(request, slug):
                 print("2")
                 if request.user.student_user:
                     cours = school_models.Cours.objects.get(slug=slug)
-                    instructor = instructor_models.Instructor.objects.get(classe__id=request.user.student_user.classe.id)
+                    #instructor = instructor_models.Instructor.objects.get(classe__id=request.user.student_user.classe.id)
                     datas = {
                         'cours': cours,
-                        'instructor' : instructor,
+                        'instructor' : cours.instructeur,
                     }
                 return render(request,'pages/fixed-student-take-course.html',datas)
         except Exception as e:
             print(e)
             print("3")
-            return redirect('my_courses')
+            return redirect('my-courses')
    
 
 @login_required(login_url = 'login')

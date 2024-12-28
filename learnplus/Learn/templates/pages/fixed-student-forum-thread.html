@@ -23,6 +23,17 @@
                         <div class="col-md-8">
 
                             <h1 class="h2 mb-2">{{ forum.titre }}</h1>
+                            {% if isOwner %}
+                            <script>
+                                function delete_thread() {
+                                    var r = confirm("Voulez-vous vraiment supprimer ce sujet?");
+                                    if (r == true) {
+                                        window.location.href = "/forum/delete_thread/" + {{ forum.id }};
+                                    }
+                                }
+                            </script>   
+                            <button class="btn btn-danger" onclick="delete_thread()">Supprimer</button>
+                                {% endif %}
                             <p class="text-muted d-flex align-items-center mb-4">
                                 
                                 {% if forum.cours is not none %}
@@ -58,11 +69,47 @@
                                     <img src="{{ user.student_user.photo.url}}" alt="people" class="avatar-img rounded-circle">
                                 </a>
                                 <div class="flex">
+                                    <script>
+                                        function getToken() {
+                                            var cookies = document.cookie.split(';');
+                                            for (var i = 0; i < cookies.length; i++) {
+                                                var cookie = cookies[i].split('=');
+                                                if (cookie[0].trim() == 'csrftoken') {
+                                                    return cookie[1];
+                                                }
+                                            }
+                                        }
+                                        function reply() {
+                                            var comment = document.getElementById('comment').value;
+                                            if (comment == '') {
+                                                alert('Veuillez entrer votre reponse');
+                                                return false;
+                                            }
+                                            let formData = new FormData();
+                                            formData.append('reponse', comment);
+                                            formData.append('thread_id', {{ forum.id }});
+                                            fetch('/forum/reply/', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRFToken': getToken()
+                                                },
+                                                body: formData
+                                            }).then(response => response.json())
+                                                .then(data => {
+                                                    if (data.success) {
+                                                        window.location.reload();
+                                                    } else {
+                                                        alert('Une erreur est survenue');
+                                                    }
+                                                });
+                                        }
+                                    </script>
                                     <div class="form-group">
                                         <label for="comment" class="form-label">Avez-vous une reponse??</label>
-                                        <textarea class="form-control" name="comment" id="comment" rows="3" placeholder="Entrer votre reponse"></textarea>
+                                        <textarea class="form-control" name="comment" id="comment" rows="3"
+                                            placeholder="Entrer votre reponse"></textarea>
                                     </div>
-                                    <button class="btn btn-success">Je reponds</button>
+                                    <button class="btn btn-success" onclick="reply()">Je reponds</button>
                                 </div>
                             </div>
                             <div class="pt-3">
