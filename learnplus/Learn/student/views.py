@@ -456,11 +456,11 @@ def messages(request, classe):
                 if request.user.student_user:
                     exist_classe = chat_models.Salon.objects.get(classe=request.user.student_user.classe)
                     info = school_models.Classe.objects.get(id=request.user.student_user.classe.id)
-                    instructor = instructor_models.Instructor.objects.get(classe__id=request.user.student_user.classe.id)
+                    #instructor = instructor_models.Instructor.objects.get(classe__id=request.user.student_user.classe.id)
                     user_room = ''                    
                     print(user_room)
                     datas = {
-                        'instructor':instructor,
+                        #'instructor':instructor,
                         'info_classe':info,
                         'classe': exist_classe,
                         'classe_json': mark_safe(json.dumps(exist_classe.id)),
@@ -595,9 +595,10 @@ def quiz_results(request):
                 print(e)
                 print("2")
                 if request.user.student_user:
+                    
                     datas = {
 
-                           }
+                    }
                 return render(request,'pages/fixed-student-quiz-results.html',datas)
         except Exception as e:
             print(e)
